@@ -1,0 +1,32 @@
+body {
+    display: flex;
+    flex-direction: column;
+    font-family: arial;
+
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 0 16px;
+    color: #333;
+}
+
+.main-content {
+    flex-grow: 1;
+}
+
+header {
+    margin-top: 16px;
+    margin-bottom: 46px;
+}
+
+footer {
+    color: #888;
+    padding: 16px 0;
+    margin-top: 16px;
+    border-top: 1px solid #eee;
+}
+
+header a {
+    color: #888888;
+    margin-right: 16px;
+    text-decoration: none;
+}

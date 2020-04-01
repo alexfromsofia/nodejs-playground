@@ -1,16 +1,24 @@
 {
-  "name": "weather-app",
-  "version": "1.0.0",
-  "description": "",
-  "main": "app.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "request": "^2.88.2",
-    "request-promise": "^4.2.5"
-  }
+    "name": "web-server",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "start": "node src/app.js",
+        "dev": "nodemon src/app.js -e js,hbs",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "express": "^4.17.1",
+        "hbs": "^4.1.0",
+        "query-string": "^6.11.1",
+        "request": "^2.88.2",
+        "request-promise": "^4.2.5"
+    },
+    "devDependencies": {
+        "nodemon": "^2.0.2"
+    }
 }
