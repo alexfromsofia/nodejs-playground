@@ -38,6 +38,11 @@ const userSchema = new Schema({
     }
 });
 
+const userEnums = ["age", "email", "name", "password"];
+
 const User = model("User", userSchema);
 
-module.exports = User;
+module.exports = {
+    User,
+    userEnums
+};

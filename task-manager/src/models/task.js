@@ -3,6 +3,7 @@ const { model, Schema } = require("mongoose");
 const taskSchema = new Schema({
     description: {
         type: String,
+        required: true,
         trim: true
     },
     completed: {
@@ -11,6 +12,11 @@ const taskSchema = new Schema({
     }
 });
 
+const taskEnums = ["description", "completed"];
+
 const Task = model("Task", taskSchema);
 
-module.exports = Task;
+module.exports = {
+    Task,
+    taskEnums
+};
