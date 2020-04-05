@@ -1,4 +1,5 @@
 const { model, Schema } = require("mongoose");
+const bcrypt = require("bcryptjs");
 const validator = require("validator");
 
 const userSchema = new Schema({
@@ -10,6 +11,7 @@ const userSchema = new Schema({
     password: {
         type: String,
         trim: true,
+        required: true,
         minLength: 7,
         validate(value) {
             if (value.includes("password")) {
@@ -19,6 +21,7 @@ const userSchema = new Schema({
     },
     email: {
         type: String,
+        unique: true,
         trim: true,
         lowercase: true,
         validate(value) {
@@ -39,6 +42,33 @@ const userSchema = new Schema({
 });
 
 const userEnums = ["age", "email", "name", "password"];
+
+userSchema.statics.findByCredentials = async (email, password) => {
+    const user = await User.findOne({ email });
+
+    if (!user) {
+        throw new Error("Unable to login.");
+    }
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
+        throw new Error("Unable to login.");
+    }
+
+    return user;
+};
+
+// Schema Middleware for hashing password before save
+// Must be a standart function in order to bind the this to userSchema
+userSchema.pre("save", async function(next) {
+    const user = this;
+
+    if (user.isModified("password")) {
+        user.password = await bcrypt.hash(user.password, 8);
+    }
+
+    next();
+});
 
 const User = model("User", userSchema);
 
