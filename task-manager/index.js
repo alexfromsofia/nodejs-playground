@@ -7,11 +7,6 @@ const taskRoutes = require("./src/routes/task");
 const app = express();
 const port = process.env.PORT || 3000;
 
-/**
- * Middleware
- */
-app.use((res, res, next) => {});
-
 app.use(express.json());
 /**
  * Routes

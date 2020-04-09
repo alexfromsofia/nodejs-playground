@@ -7,7 +7,7 @@ const userSchema = new Schema({
     name: {
         type: String,
         required: true,
-        trim: true
+        trim: true,
     },
     password: {
         type: String,
@@ -18,7 +18,7 @@ const userSchema = new Schema({
             if (value.includes("password")) {
                 throw new Error("Please provide a stronger password.");
             }
-        }
+        },
     },
     email: {
         type: String,
@@ -29,7 +29,7 @@ const userSchema = new Schema({
             if (!validator.isEmail(value)) {
                 throw new Error("Invalid email.");
             }
-        }
+        },
     },
     age: {
         type: Number,
@@ -38,28 +38,37 @@ const userSchema = new Schema({
             if (value <= 0) {
                 throw new Error("Age must be a positive number.");
             }
-        }
+        },
     },
     tokens: [
         {
             token: {
                 type: String,
-                required: true
-            }
-        }
-    ]
+                required: true,
+            },
+        },
+    ],
 });
 
 const userEnums = ["age", "email", "name", "password"];
 
-const secret = "thisismysecret";
-userSchema.methods.generateAuthToken = async function() {
+userSchema.methods.generateAuthToken = async function () {
     const user = this;
-    const token = jwt.sign({ _id: user._id.toString() }, secret);
+    const token = jwt.sign({ _id: user._id.toString() }, "thisismysecret");
     user.tokens = user.tokens.concat({ token });
 
     await user.save();
     return token;
+};
+
+userSchema.methods.toJSON = function () {
+    const user = this;
+    const userObject = user.toObject();
+
+    delete userObject.password;
+    delete userObject.tokens;
+
+    return userObject;
 };
 
 userSchema.statics.findByCredentials = async (email, password) => {
@@ -79,7 +88,7 @@ userSchema.statics.findByCredentials = async (email, password) => {
 
 // Schema Middleware for hashing password before save
 // Must be a standart function in order to bind the this to userSchema
-userSchema.pre("save", async function(next) {
+userSchema.pre("save", async function (next) {
     const user = this;
 
     if (user.isModified("password")) {
@@ -93,5 +102,5 @@ const User = model("User", userSchema);
 
 module.exports = {
     User,
-    userEnums
+    userEnums,
 };
