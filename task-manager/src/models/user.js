@@ -2,6 +2,7 @@ const { model, Schema } = require("mongoose");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const validator = require("validator");
+const { Task } = require("./task");
 
 const userSchema = new Schema({
     name: {
@@ -50,6 +51,12 @@ const userSchema = new Schema({
     ],
 });
 
+userSchema.virtual("tasks", {
+    ref: "Task",
+    localField: "_id",
+    foreignField: "owner",
+});
+
 const userEnums = ["age", "email", "name", "password"];
 
 userSchema.methods.generateAuthToken = async function () {
@@ -95,6 +102,13 @@ userSchema.pre("save", async function (next) {
         user.password = await bcrypt.hash(user.password, 8);
     }
 
+    next();
+});
+
+userSchema.pre("remove", async function (next) {
+    const user = this;
+
+    await Task.deleteMany({ owner: user._id });
     next();
 });
 
