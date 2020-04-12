@@ -23,6 +23,7 @@ router.post("/tasks", authMiddleware, async (req, res) => {
 
 router.get("/tasks", authMiddleware, async (req, res) => {
     const match = {};
+    const sort = {};
 
     const { query } = req;
 
@@ -30,11 +31,22 @@ router.get("/tasks", authMiddleware, async (req, res) => {
         match.completed = query.completed === "true";
     }
 
+    if (query.sortBy) {
+        const { sortBy } = query;
+        const [sortType, order] = sortBy.split(":");
+        sort[sortType] = order === "desc" ? -1 : 1;
+    }
+
     try {
         await req.user
             .populate({
                 path: "tasks",
                 match,
+                options: {
+                    limit: parseInt(query.limit),
+                    skip: parseInt(query.skip),
+                },
+                sort,
             })
             .execPopulate();
 
