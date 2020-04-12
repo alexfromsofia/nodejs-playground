@@ -22,8 +22,21 @@ router.post("/tasks", authMiddleware, async (req, res) => {
 });
 
 router.get("/tasks", authMiddleware, async (req, res) => {
+    const match = {};
+
+    const { query } = req;
+
+    if (query.completed) {
+        match.completed = query.completed === "true";
+    }
+
     try {
-        await req.user.populate("tasks").execPopulate();
+        await req.user
+            .populate({
+                path: "tasks",
+                match,
+            })
+            .execPopulate();
 
         res.send(req.user.tasks);
     } catch (error) {
