@@ -17,3 +17,14 @@ form.addEventListener("submit", (event) => {
 
     input.value = "";
 });
+
+document.getElementById("send-location").addEventListener("click", (event) => {
+    if (!navigator.geolocation) {
+        return alert("Geolocation is not supported by your browser.");
+    }
+
+    navigator.geolocation.getCurrentPosition((position) => {
+        const { latitude, longitude } = position.coords;
+        socket.emit("sendLocation", { latitude, longitude });
+    });
+});

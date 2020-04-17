@@ -23,9 +23,21 @@ io.on("connection", (socket) => {
     console.log("New WS connection");
 
     socket.emit("message", "Welcome!");
+    socket.broadcast.emit("message", "A new user has joined!");
 
     socket.on("submitMessage", (message) => {
         io.emit("submitMessage", message);
+    });
+
+    socket.on("sendLocation", ({ latitude, longitude }) => {
+        io.emit(
+            "message",
+            `User location is: https://google.com/maps?q=${latitude},${longitude}`
+        );
+    });
+
+    socket.on("disconnect", () => {
+        io.emit("message", "A user has left!");
     });
 });
 
