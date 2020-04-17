@@ -5,7 +5,6 @@ const authMiddleware = require("../middleware/authentication");
 const { Task, taskEnums } = require("../models/task");
 
 router.post("/tasks", authMiddleware, async (req, res) => {
-    console.log(req.body);
     const task = new Task({
         ...req.body,
         owner: req.user._id,
@@ -16,7 +15,6 @@ router.post("/tasks", authMiddleware, async (req, res) => {
 
         res.status(201).send(task);
     } catch (error) {
-        console.log(error);
         res.status(400).send(error);
     }
 });
@@ -82,16 +80,13 @@ router.patch("/tasks/:id", authMiddleware, async (req, res) => {
     if (!isValidOperation) {
         return res.status(400).send({ error: "Invalid update!" });
     }
-    console.log({
-        id: req.params.id,
-        owner: req.user._id,
-    });
+
     try {
         const task = await Task.findOne({
             _id: req.params.id,
             owner: req.user._id,
         });
-        console.log(task);
+
         if (!task) {
             return res.status(404).send();
         }
@@ -117,8 +112,9 @@ router.delete("/tasks/:id", authMiddleware, async (req, res) => {
             return res.status(404).send();
         }
 
-        req.send(task);
+        res.send(task);
     } catch (error) {
+        console.log(error);
         res.status(500).send(error);
     }
 });
