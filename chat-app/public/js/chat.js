@@ -13,7 +13,13 @@ form.addEventListener("submit", (event) => {
     event.preventDefault();
     const { value } = event.target.elements.message;
 
-    socket.emit("submitMessage", value);
+    socket.emit("submitMessage", value, (error) => {
+        if (error) {
+            return console.log(error);
+        }
+
+        console.log("Delivered!");
+    });
 
     input.value = "";
 });
@@ -25,6 +31,8 @@ document.getElementById("send-location").addEventListener("click", (event) => {
 
     navigator.geolocation.getCurrentPosition((position) => {
         const { latitude, longitude } = position.coords;
-        socket.emit("sendLocation", { latitude, longitude });
+        socket.emit("sendLocation", { latitude, longitude }, () => {
+            console.log("Location shared");
+        });
     });
 });
