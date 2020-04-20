@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Chat App</title>
         <link rel="shortcut icon" href="/img/favicon.png" />
-        <link rel="stylesheet" href="/css/styles.min.css" />
+        <link rel="stylesheet" href="/css/styles.css" />
     </head>
     <body>
         <div class="chat">
@@ -20,9 +20,35 @@
                             id="input"
                             autocomplete="off"
                         />
-                        <button type="submit">Send Message</button>
+                        <button type="submit">
+                            <svg
+                                class="icon send"
+                                focusable="false"
+                                viewBox="0 0 24 24"
+                                aria-hidden="true"
+                                tabindex="-1"
+                                title="Send"
+                            >
+                                <path
+                                    d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"
+                                ></path>
+                            </svg>
+                        </button>
                     </form>
-                    <button id="send-location">Send location</button>
+                    <button id="send-location">
+                        <svg
+                            class="icon my-location"
+                            focusable="false"
+                            viewBox="0 0 24 24"
+                            aria-hidden="true"
+                            tabindex="-1"
+                            title="MyLocation"
+                        >
+                            <path
+                                d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3c-.46-4.17-3.77-7.48-7.94-7.94V1h-2v2.06C6.83 3.52 3.52 6.83 3.06 11H1v2h2.06c.46 4.17 3.77 7.48 7.94 7.94V23h2v-2.06c4.17-.46 7.48-3.77 7.94-7.94H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"
+                            ></path>
+                        </svg>
+                    </button>
                 </div>
             </div>
         </div>
