@@ -13,19 +13,25 @@ const locationMessageTemplate = document.getElementById(
     "location-message-template"
 ).innerHTML;
 
-socket.on("locationMessage", (message) => {
+// Options
+const { username, room } = Qs.parse(location.search, {
+    ignoreQueryPrefix: true,
+});
+
+const formatDate = (timestamp) => moment(timestamp).format("h:mm a");
+
+socket.on("locationMessage", ({ createdAt, ...rest }) => {
     const html = Mustache.render(locationMessageTemplate, {
-        text: message.text,
-        createdAt: moment(message.createdAt).format("h:mm a"),
+        createdAt: formatDate(createdAt),
+        ...rest,
     });
     $messages.insertAdjacentHTML("beforeend", html);
 });
 
-socket.on("message", (message) => {
-    console.log(message);
+socket.on("message", ({ createdAt, ...rest }) => {
     const html = Mustache.render(messageTemplate, {
-        text: message.text,
-        createdAt: moment(message.createdAt).format("h:mm a"),
+        createdAt: formatDate(createdAt),
+        ...rest,
     });
     $messages.insertAdjacentHTML("beforeend", html);
 });
@@ -44,8 +50,6 @@ $messageForm.addEventListener("submit", (event) => {
         if (error) {
             return console.log(error);
         }
-
-        console.log("Delivered!");
     });
 });
 
@@ -60,8 +64,15 @@ $sendLocationButton.addEventListener("click", (event) => {
     navigator.geolocation.getCurrentPosition((position) => {
         const { latitude, longitude } = position.coords;
         socket.emit("sendLocation", { latitude, longitude }, () => {
-            console.log("Location shared");
             $sendLocationButton.removeAttribute("disabled");
         });
     });
+});
+
+socket.emit("join", { username, room }, (error) => {
+    if (error) {
+        console.log(error);
+        alert(error);
+        location.href = "/";
+    }
 });
