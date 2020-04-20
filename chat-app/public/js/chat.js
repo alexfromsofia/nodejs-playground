@@ -20,7 +20,32 @@ const { username, room } = Qs.parse(location.search, {
     ignoreQueryPrefix: true,
 });
 
+// Utils
 const formatDate = (timestamp) => moment(timestamp).format("h:mm a");
+const autoScroll = () => {
+    // New message element
+    const $newMessage = $messages.lastElementChild;
+
+    // Height of $newMessage
+    const newMessageStyles = getComputedStyle($newMessage);
+    const newMessageMargin =
+        parseInt(newMessageStyles.marginBottom) +
+        parseInt(newMessageStyles.marginTop);
+    const newMessageHeight = $newMessage.offsetHeight + newMessageMargin;
+
+    // VisibleHeight
+    const visibleHeight = $messages.offsetHeight;
+
+    // Height of messages container
+    const containerHeight = $messages.scrollHeight;
+
+    // How far have I scrolled?
+    const scrollOffset = $messages.scrollTop + visibleHeight;
+
+    if (containerHeight - newMessageHeight <= scrollOffset) {
+        $messages.scrollTop = $messages.scrollHeight;
+    }
+};
 
 socket.on("locationMessage", ({ createdAt, ...rest }) => {
     const html = Mustache.render(locationMessageTemplate, {
@@ -28,6 +53,7 @@ socket.on("locationMessage", ({ createdAt, ...rest }) => {
         ...rest,
     });
     $messages.insertAdjacentHTML("beforeend", html);
+    autoScroll();
 });
 
 socket.on("message", ({ createdAt, ...rest }) => {
@@ -36,13 +62,17 @@ socket.on("message", ({ createdAt, ...rest }) => {
         ...rest,
     });
     $messages.insertAdjacentHTML("beforeend", html);
+    autoScroll();
 });
 
 $messageForm.addEventListener("submit", (event) => {
     event.preventDefault();
-    $messageFormButton.setAttribute("disabled", "disabled");
 
     const { value } = $messageFormInput;
+
+    if (value === "") return;
+
+    $messageFormButton.setAttribute("disabled", "disabled");
 
     socket.emit("sendMessage", value, (error) => {
         $messageFormButton.removeAttribute("disabled");
